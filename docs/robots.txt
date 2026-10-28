@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bd-ram.github.io/deepseek-whale-plushies/sitemap.xml
