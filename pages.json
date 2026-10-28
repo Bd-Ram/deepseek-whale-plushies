@@ -1,0 +1,16 @@
+{
+  "url": "https://api.github.com/repos/Bd-Ram/deepseek-whale-plushies/pages",
+  "status": null,
+  "cname": null,
+  "custom_404": false,
+  "html_url": "https://bd-ram.github.io/deepseek-whale-plushies/",
+  "build_type": "legacy",
+  "source": {
+    "branch": "main",
+    "path": "/docs"
+  },
+  "public": true,
+  "protected_domain_state": null,
+  "pending_domain_unverified_at": null,
+  "https_enforced": true
+}

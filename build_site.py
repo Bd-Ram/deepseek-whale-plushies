@@ -267,7 +267,7 @@ img { max-width: 100%; display: block; }
   display: flex; flex-direction: column;
 }
 .card:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(13,21,38,.12); }
-.card img { aspect-ratio: 1/1; object-fit: cover; width: 100%; }
+.card img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; }
 .card-body { padding: 13px 15px 17px; }
 .card-kicker { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); font-weight: 700; }
 .card h2 { font-size: 15.5px; margin: 6px 0 6px; line-height: 1.35; }
@@ -282,6 +282,7 @@ img { max-width: 100%; display: block; }
 }
 @media (max-width: 760px) { .design-wrap { grid-template-columns: 1fr; } }
 .design-shot { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background:#fff; }
+.design-shot img { width: 100%; height: auto; }
 .crumbs { font-size: 13px; color: var(--muted); margin: 0 0 10px; }
 .design-info h1 { font-size: clamp(23px, 3vw, 34px); line-height: 1.18; margin: 0 0 12px; letter-spacing: -.3px; }
 .design-info > p { color: #2b3a55; }
