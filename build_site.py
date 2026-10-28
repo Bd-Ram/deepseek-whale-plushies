@@ -6,6 +6,7 @@ what gets pushed to GitHub Pages.
 """
 import os
 import re
+import hashlib
 import shutil
 from pathlib import Path
 
@@ -148,6 +149,7 @@ ITEMS = [
     ),
 ]
 
+CSSVER = "v1"
 HEAD = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,7 +173,7 @@ HEAD = """<!DOCTYPE html>
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{description}">
 <meta name="twitter:image" content="{ogimage}">
-<link rel="stylesheet" href="{root}assets/style.css">
+<link rel="stylesheet" href="{root}assets/style.css?v={cssver}">
 <link rel="sitemap" type="application/xml" href="{root}sitemap.xml">
 <script type="application/ld+json">{jsonld}</script>
 </head>
@@ -307,6 +309,11 @@ img { max-width: 100%; display: block; }
 """
 
 
+def fmt(tpl: str, **kw) -> str:
+    kw.setdefault("cssver", CSSVER)
+    return tpl.format(**kw)
+
+
 def esc(s: str) -> str:
     return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
              .replace('"', "&quot;"))
@@ -431,6 +438,8 @@ def build():
         im.save(OUT / "images" / "thumb" / f"{it['slug']}.jpg", "JPEG",
                 quality=82, optimize=True, progressive=True)
 
+    global CSSVER
+    CSSVER = hashlib.sha1(CSS.encode()).hexdigest()[:8]
     (OUT / "assets" / "style.css").write_text(CSS, encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
 
@@ -449,7 +458,7 @@ def build():
     title = "DeepSeek Whale Maid Plush Pillows — 14 Kawaii AI Mascot Cushion Designs (Photos)"
     desc = ("Photo gallery of 14 DeepSeek whale mascot maid plush pillow designs: front view, body pillow, "
             "meme editions and desk-scene cushions. English descriptions, sizing notes, order via Telegram.")
-    html = HEAD.format(
+    html = fmt(HEAD, 
         title=esc(title), description=esc(desc),
         keywords=("deepseek plush, deepseek whale plush, whale maid plush pillow, ai mascot plush, "
                   "kawaii anime cushion, anime body pillow, meme plush pillow, developer desk decor, "
@@ -490,7 +499,7 @@ def build():
 </section>
 </main>
 """
-    html += FOOT.format(root="", tg=TG_URL, handle=TG_HANDLE)
+    html += fmt(FOOT, root="", tg=TG_URL, handle=TG_HANDLE)
     (OUT / "index.html").write_text(html, encoding="utf-8")
 
     # per design pages
@@ -499,7 +508,7 @@ def build():
         next_it = ITEMS[i + 1] if i + 1 < len(ITEMS) else None
         ptitle = f"{it['name']} — DeepSeek Whale Maid Plush Pillow | Design {it['n']:02d}"
         pdesc = it["desc"][:150]
-        page = HEAD.format(
+        page = fmt(HEAD, 
             title=esc(ptitle), description=esc(pdesc), keywords=esc(it["keywords"]),
             canonical=f"{SITE_URL}/designs/{it['slug']}.html", ogtype="article", site=SITE_NAME,
             ogimage=f"{SITE_URL}/images/{it['slug']}.jpg", ogalt=esc(it["alt"]),
@@ -541,7 +550,7 @@ def build():
   </div>
 </main>
 """
-        page += FOOT.format(root="../", tg=TG_URL, handle=TG_HANDLE)
+        page += fmt(FOOT, root="../", tg=TG_URL, handle=TG_HANDLE)
         (OUT / "designs" / f"{it['slug']}.html").write_text(page, encoding="utf-8")
 
     # sitemap
@@ -562,7 +571,7 @@ def build():
         "User-agent: *\nAllow: /\n\nSitemap: " + f"{SITE_URL}/sitemap.xml\n", encoding="utf-8")
 
     (OUT / "404.html").write_text(
-        HEAD.format(title="Page not found — DeepSeek Whale Maid Plushies",
+        fmt(HEAD, title="Page not found — DeepSeek Whale Maid Plushies",
                     description="That page does not exist. Browse all 14 DeepSeek whale maid plush pillow designs.",
                     keywords="deepseek plush, whale maid pillow", canonical=f"{SITE_URL}/404.html",
                     ogtype="website", site=SITE_NAME, ogimage=f"{SITE_URL}/images/{ITEMS[0]['slug']}.jpg",
@@ -570,7 +579,7 @@ def build():
                     tg=TG_URL, handle=TG_HANDLE)
         + f"""<main class="hero"><h1>404 — no plush here</h1>
 <p class="lede">That link is dead. All 14 designs are on the <a href="/index.html">gallery page</a>.</p></main>"""
-        + FOOT.format(root="/", tg=TG_URL, handle=TG_HANDLE),
+        + fmt(FOOT, root="/", tg=TG_URL, handle=TG_HANDLE),
         encoding="utf-8")
 
     print(f"built {len(ITEMS)} design pages -> {OUT}")
